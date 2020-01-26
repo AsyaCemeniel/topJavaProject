@@ -18,7 +18,7 @@
     </properties>
 
     <build>
-        <finalName>topjava</finalName>
+        <finalName>topJavaProject</finalName>
         <defaultGoal>install</defaultGoal>
         <plugins>
             <plugin>

@@ -22,7 +22,6 @@ import static ru.javawebinar.topjava.TestUtil.readFromJson;
 import static ru.javawebinar.topjava.TestUtil.readFromJsonMvcResult;
 
 
-import static org.junit.jupiter.api.Assertions.*;
 import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.UserTestData.USER;
 
@@ -85,9 +84,7 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetween() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "filter")
-                .param("startDateTime", "2015-05-30T10:00")
-                .param("endDateTime", "2015-05-31T00:00"))
+        mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "filter?startDateTime=2015-05-30T10:00&endDateTime=2015-05-31T00:00"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(contentJson(MealsUtil.createTo(MEAL1, false), MealsUtil.createTo( MEAL4, true)));

@@ -3,7 +3,7 @@ var mealAjaxUrl = "ajax/profile/meals/";
 function updateFilteredTable() {
     $.ajax({
         type: "GET",
-        url: "ajax/profile/meals/filter",
+        url: mealAjaxUrl + "filter",
         data: $("#filter").serialize()
     }).done(updateTableByData);
 }
@@ -57,11 +57,7 @@ $(function () {
                 ]
             ],
             "createdRow": function (row, data, dataIndex) {
-                if(data.excess) {
-                    $(row).attr("data-mealExcess", true);
-                } else {
-                    $(row).attr("data-mealExcess", false);
-                }
+                    $(row).attr("data-mealExcess", data.excess);
             }
         }),
         updateTable: updateFilteredTable

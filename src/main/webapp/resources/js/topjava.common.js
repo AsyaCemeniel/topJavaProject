@@ -11,6 +11,8 @@ function makeEditable(ctx) {
     $.ajaxSetup({cache: false});
 }
 
+
+
 function add() {
     $("#modalTitle").html(i18n["addTitle"]);
     form.find(":input").val("");

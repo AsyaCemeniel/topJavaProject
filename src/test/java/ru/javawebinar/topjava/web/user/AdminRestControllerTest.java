@@ -6,10 +6,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.javawebinar.topjava.TestUtil;
 import ru.javawebinar.topjava.UserTestData;
+import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
+
+import java.util.Collections;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.model.Role.ROLE_USER;
 
 class AdminRestControllerTest extends AbstractControllerTest {
 
@@ -89,6 +94,14 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void invalidUpdate() throws Exception {
+        User user = new User(USER_ID, "a", "aaa", null, 5, ROLE_USER);
+        perform(doPut(USER_ID).jsonBody(user).basicAuth(ADMIN))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
     void createWithLocation() throws Exception {
         User newUser = UserTestData.getNew();
         ResultActions action = perform(doPost().jsonUserWithPassword(newUser).basicAuth(ADMIN))
@@ -99,6 +112,14 @@ class AdminRestControllerTest extends AbstractControllerTest {
         newUser.setId(newId);
         USER_MATCHERS.assertMatch(created, newUser);
         USER_MATCHERS.assertMatch(userService.get(newId), newUser);
+    }
+
+    @Test
+    void invalidCreate() throws Exception {
+        User user = new User(null, "a", "aaa", "nul", 5, false, new Date(), Collections.singleton(Role.ROLE_USER));
+        perform(doPost().jsonUserWithPassword(user).basicAuth(ADMIN))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test

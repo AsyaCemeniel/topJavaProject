@@ -90,6 +90,15 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void invalidCreate() throws Exception {
+        Meal newMeal = new Meal(null, null, "a", 5);
+        perform(doPost().jsonBody(newMeal).basicAuth(USER))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+
+    }
+
+    @Test
     void getAll() throws Exception {
         perform(doGet().basicAuth(USER))
                 .andExpect(status().isOk())
@@ -113,5 +122,13 @@ class MealRestControllerTest extends AbstractControllerTest {
         perform(doGet("filter?startDate=&endTime=").basicAuth(USER))
                 .andExpect(status().isOk())
                 .andExpect(MEAL_TO_MATCHERS.contentJson(getTos(MEALS, USER.getCaloriesPerDay())));
+    }
+
+    @Test
+    void invalidUpdate() throws Exception {
+        Meal meal = new Meal(MEAL1_ID, null, null, 5);
+        perform(doPut(MEAL1_ID).jsonBody(meal).basicAuth(USER))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 }

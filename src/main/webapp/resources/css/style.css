@@ -1,9 +1,9 @@
 tr[data-mealExcess="false"] {
-    color: green;
+    color: #007BFF;
 }
 
 tr[data-mealExcess="true"] {
-    color: red;
+    color: #DC3545;
 }
 
 .fa {

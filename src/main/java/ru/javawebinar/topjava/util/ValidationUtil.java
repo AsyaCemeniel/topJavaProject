@@ -77,4 +77,8 @@ public class ValidationUtil {
         }
     }
 
+    public static String message(Throwable ex) {
+        return ex.getLocalizedMessage() != null ? ex.getLocalizedMessage() : ex.getClass().getName();
+    }
+
 }

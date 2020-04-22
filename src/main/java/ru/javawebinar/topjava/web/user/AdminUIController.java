@@ -52,7 +52,7 @@ public class AdminUIController extends AbstractUserController {
                 super.update(userTo, userTo.id());
             }
         } catch (DataIntegrityViolationException e) {
-            throw new IllegalRequestDataException(messageSource.getMessage("exception.duplicateEmail", null, Locale.getDefault()));
+            throw new IllegalRequestDataException(messageSource.getMessage(DUPLICATE_EMAIL, null, Locale.getDefault()));
         }
     }
 

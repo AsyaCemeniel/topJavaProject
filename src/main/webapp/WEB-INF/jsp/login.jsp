@@ -17,12 +17,12 @@
             <div class="message"><spring:message code="${param.message}"/></div>
         </c:if>
         <sec:authorize access="isAnonymous()">
-            <div class="pt-4">
-                <a class="btn btn-lg btn-success" href="profile/register"><spring:message code="app.register"/> &raquo;</a>
-                <button type="submit" class="btn btn-lg btn-primary" onclick="login('user@yandex.ru', 'password')">
+            <div class="pt-2">
+                <a class="btn btn-lg btn-info mt-2" href="profile/register"><spring:message code="app.register"/> &raquo;</a>
+                <button type="submit" class="btn btn-lg btn-primary mt-2" onclick="login('user@yandex.ru', 'password')">
                     <spring:message code="app.login"/> User
                 </button>
-                <button type="submit" class="btn btn-lg btn-primary" onclick="login('admin@gmail.com', 'admin')">
+                <button type="submit" class="btn btn-lg btn-primary mt-2" onclick="login('admin@gmail.com', 'admin')">
                     <spring:message code="app.login"/> Admin
                 </button>
             </div>
@@ -52,7 +52,9 @@
         </div>
     </div>
 </div>
-<div class="container lead"><spring:message code="app.description"/>
+<div class="container">
+    <div class="lead"><spring:message code="app.description"/></div>
+    <a class="btn btn-lg btn-success my-4" href="swagger-ui.html" target="_blank">Swagger REST Api Documentation</a>
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 <script type="text/javascript">

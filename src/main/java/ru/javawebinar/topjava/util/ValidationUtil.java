@@ -12,7 +12,24 @@ import java.util.Set;
 
 public class ValidationUtil {
 
+    private static final Validator validator;
+
+    static {
+        //  From Javadoc: implementations are thread-safe and instances are typically cached and reused.
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        //  From Javadoc: implementations of this interface must be thread-safe
+        validator = factory.getValidator();
+    }
+
     private ValidationUtil() {
+    }
+
+    public static <T> void validate(T bean) {
+        // https://alexkosarev.name/2018/07/30/bean-validation-api/
+        Set<ConstraintViolation<T>> violations = validator.validate(bean);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
     }
 
     public static <T> T checkNotFoundWithId(T object, int id) {
@@ -29,9 +46,9 @@ public class ValidationUtil {
         return object;
     }
 
-    public static void checkNotFound(boolean found, String arg) {
+    public static void checkNotFound(boolean found, String msg) {
         if (!found) {
-            throw new NotFoundException(arg);
+            throw new NotFoundException("Not found entity with " + msg);
         }
     }
 
@@ -65,30 +82,13 @@ public class ValidationUtil {
         return e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getClass().getName();
     }
 
-    public static Throwable logAndGetRootCause(Logger log, HttpServletRequest req, Exception e, boolean logException, ErrorType errorType) {
+    public static Throwable logAndGetRootCause(Logger log, HttpServletRequest req, Exception e, boolean logStackTrace, ErrorType errorType) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
-        if (logException) {
+        if (logStackTrace) {
             log.error(errorType + " at request " + req.getRequestURL(), rootCause);
         } else {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
         return rootCause;
-    }
-
-    private static final Validator validator;
-
-    static {
-        //  From Javadoc: implementations are thread-safe and instances are typically cached and reused.
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        //  From Javadoc: implementations of this interface must be thread-safe
-        validator = factory.getValidator();
-    }
-
-    public static <T> void validate(T bean, Class<?>... groups) {
-        // https://alexkosarev.name/2018/07/30/bean-validation-api/
-        Set<ConstraintViolation<T>> violations = validator.validate(bean, groups);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
-        }
     }
 }

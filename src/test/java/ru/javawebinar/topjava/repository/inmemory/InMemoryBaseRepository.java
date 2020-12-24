@@ -12,9 +12,9 @@ import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class InMemoryBaseRepository<T extends AbstractBaseEntity> {
 
-    private static AtomicInteger counter = new AtomicInteger(START_SEQ);
+    private static final AtomicInteger counter = new AtomicInteger(START_SEQ);
 
-    Map<Integer, T> map = new ConcurrentHashMap<>();
+    final Map<Integer, T> map = new ConcurrentHashMap<>();
 
     public T save(T entry) {
         Objects.requireNonNull(entry, "Entry must not be null");

@@ -18,7 +18,6 @@ public class MealService {
 
     private final MealRepository repository;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MealService(MealRepository repository) {
         this.repository = repository;
     }

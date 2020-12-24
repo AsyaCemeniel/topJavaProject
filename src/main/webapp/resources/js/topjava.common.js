@@ -1,13 +1,12 @@
-var context, form;
+var form;
 
-function makeEditable(ctx) {
-    context = ctx;
-    context.datatableApi = $("#datatable").DataTable(
+function makeEditable(datatableOpts) {
+    ctx.datatableApi = $("#datatable").DataTable(
         // https://api.jquery.com/jquery.extend/#jQuery-extend-deep-target-object1-objectN
-        $.extend(true, ctx.datatableOpts,
+        $.extend(true, datatableOpts,
             {
                 "ajax": {
-                    "url": context.ajaxUrl,
+                    "url": ctx.ajaxUrl,
                     "dataSrc": ""
                 },
                 "paging": false,
@@ -40,8 +39,9 @@ function add() {
 }
 
 function updateRow(id) {
+    form.find(":input").val("");
     $("#modalTitle").html(i18n["editTitle"]);
-    $.get(context.ajaxUrl + id, function (data) {
+    $.get(ctx.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
             form.find("input[name='" + key + "']").val(value);
         });
@@ -52,27 +52,27 @@ function updateRow(id) {
 function deleteRow(id) {
     if (confirm(i18n['common.confirm'])) {
         $.ajax({
-            url: context.ajaxUrl + id,
+            url: ctx.ajaxUrl + id,
             type: "DELETE"
         }).done(function () {
-            context.updateTable();
+            ctx.updateTable();
             successNoty("common.deleted");
         });
     }
 }
 
 function updateTableByData(data) {
-    context.datatableApi.clear().rows.add(data).draw();
+    ctx.datatableApi.clear().rows.add(data).draw();
 }
 
 function save() {
     $.ajax({
         type: "POST",
-        url: context.ajaxUrl,
+        url: ctx.ajaxUrl,
         data: form.serialize()
     }).done(function () {
         $("#editRow").modal("hide");
-        context.updateTable();
+        ctx.updateTable();
         successNoty("common.saved");
     });
 }
@@ -98,7 +98,7 @@ function successNoty(key) {
 
 function failNoty(jqXHR) {
     closeNoty();
-    var errorInfo = JSON.parse(jqXHR.responseText);
+    var errorInfo = jqXHR.responseJSON;
     failedNote = new Noty({
         text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.typeMessage + "<br>" + errorInfo.details.join("<br>"),
         type: "error",

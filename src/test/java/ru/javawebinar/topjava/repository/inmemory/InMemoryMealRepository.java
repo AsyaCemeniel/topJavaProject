@@ -22,11 +22,11 @@ public class InMemoryMealRepository implements MealRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryMealRepository.class);
 
     // Map  userId -> mealRepository
-    private Map<Integer, InMemoryBaseRepository<Meal>> usersMealsMap = new ConcurrentHashMap<>();
+    private final Map<Integer, InMemoryBaseRepository<Meal>> usersMealsMap = new ConcurrentHashMap<>();
 
     {
         var userMeals = new InMemoryBaseRepository<Meal>();
-        MealTestData.MEALS.forEach(meal -> userMeals.map.put(meal.getId(), meal));
+        MealTestData.meals.forEach(meal -> userMeals.map.put(meal.getId(), meal));
         usersMealsMap.put(UserTestData.USER_ID, userMeals);
     }
 
@@ -62,17 +62,15 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        Objects.requireNonNull(startDateTime, "startDateTime must not be null");
-        Objects.requireNonNull(endDateTime, "endDateTime must not be null");
-        return getAllFiltered(userId, meal -> Util.isBetweenHalfOpen(meal.getDateTime(), startDateTime, endDateTime));
+        return filterByPredicate(userId, meal -> Util.isBetweenHalfOpen(meal.getDateTime(), startDateTime, endDateTime));
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return getAllFiltered(userId, meal -> true);
+        return filterByPredicate(userId, meal -> true);
     }
 
-    private List<Meal> getAllFiltered(int userId, Predicate<Meal> filter) {
+    private List<Meal> filterByPredicate(int userId, Predicate<Meal> filter) {
         var meals = usersMealsMap.get(userId);
         return meals == null ? Collections.emptyList() :
                 meals.getCollection().stream()
